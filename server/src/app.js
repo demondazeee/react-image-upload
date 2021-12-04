@@ -8,7 +8,12 @@ const path = require('path')
 
 const upload = multer({
     fileFilter: (req, file, cb) =>{
-        cb(undefined, true)
+        if(file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg'){
+            cb(undefined, true)
+        } else {
+            cb('Invalid File Type', false)
+        }
+        
     }
 })
 
@@ -35,7 +40,7 @@ app.post('/upload', upload.single('image'), async (req, res)=>{
         res.status(500).send({errorMsg: e})
     }
 }, (error, req, res, next) =>{
-    res.status(500).send({errorMsg: e})
+    res.status(500).send({errorMsg: error})
     next()
 })
 

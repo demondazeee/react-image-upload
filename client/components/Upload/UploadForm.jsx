@@ -10,12 +10,21 @@ const UploadForm = () =>{
     const [selectedFile, setSelectedFile] = useState()
     const [previewState, setPreviewState] = useState()
     const [resultState, setResultState] = useState()
+    const [errorState, setErrorState] = useState()
 
     const uploadFileHandler = (e) =>{
+        setErrorState(false)
         const file = e.target.files[0]
-        previewImage(file)
-        setSelectedFile(file)
-        setInputState(e.target.value)
+        if(file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg'){
+            previewImage(file) 
+            setSelectedFile(file)
+            setInputState(e.target.value)
+        } else {
+            setErrorState('Invalid File Type!')
+            setInputState('')
+            setPreviewState('')
+        }
+
     }
 
     const previewImage = (file) =>{
@@ -29,6 +38,9 @@ const UploadForm = () =>{
 
     const submitUploadHanlder = async (e) =>{
         e.preventDefault()
+        if(errorState){
+            return
+        }
         uploadImage(selectedFile)
     }
 
@@ -72,6 +84,12 @@ const UploadForm = () =>{
                 <h3>Image successfully uploaded</h3>
                 <p>URL: <a href={resultState.image}>Link</a></p>
                 <img src={resultState.image} alt='some image' style={{height: '300px'}} />
+            </div>
+        )}
+        {errorState && (
+            <div>
+                <h3>Error Uploading Image</h3>
+                <p>Error: {errorState}</p>
             </div>
         )}
         </>
